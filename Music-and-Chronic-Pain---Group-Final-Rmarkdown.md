@@ -1,0 +1,134 @@
+Music and Chronic Pain - Rmarkdown Final
+================
+Sydney Drake
+2025-10-30
+
+- [QUESTION](#question)
+- [HYPOTHESIS](#hypothesis)
+- [STATISTICAL TEST](#statistical-test)
+- [VISUALIZATION - BAR PLOT GRAPH](#visualization---bar-plot-graph)
+- [REFERENCES](#references)
+
+# QUESTION
+
+Does music decrease the experience of chronic pain associated with
+fibromyalgia? What type of music has the greatest effect on chronic
+pain?
+
+# HYPOTHESIS
+
+Participants with fibromyalgia experiencing chronic pain will report
+less pain while listening to music. Classical music will have the most
+effective performance.
+
+# STATISTICAL TEST
+
+We will test the significance of our data using Repeated-Measures ANOVA,
+which will compare pain level across each of the individual’s four
+conditions: initial pain, pain after pink noise, as well as pain before
+and after music of choice.
+
+For visualization, we will compare the bar plot of individual’s pain
+scores across these three conditions.
+
+```
+# Load libraries
+library(tidyverse)
+library(ez)
+
+# Import data
+data <- read.csv("dataset.csv")
+
+# Check the structure of your dataset
+str(data)
+head(data)
+
+# Reshape data from wide to long format
+# (assuming each row = one participant, and columns = conditions)
+data_long <- data %>%
+  pivot_longer(cols = c(pic1, pic2, pi1, pim2),
+               names_to = "Condition",
+               values_to = "Pain")
+
+# Add a participant ID if not already present
+if(!"Participant" %in% names(data_long)){
+  data_long$Participant <- rep(1:(nrow(data_long)/4), each = 4)
+}
+
+# Run repeated-measures ANOVA
+anova_result <- ezANOVA(
+  data = data_long,
+  dv = Pain,
+  wid = Participant,
+  within = Condition,
+  detailed = TRUE
+)
+
+# View results
+print(anova_result)
+
+# Optional: pairwise comparisons (post-hoc)
+pairwise.t.test(data_long$Pain, data_long$Condition, paired = TRUE, p.adjust.method = "bonferroni")
+
+# Optional: bar plot with error bars
+ggplot(data_long, aes(x = Condition, y = Pain, fill = Condition)) +
+  stat_summary(fun = mean, geom = "bar", color = "black", width = 0.6) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2) +
+  theme_minimal() +
+  labs(title = "Pain Ratings Across Conditions", y = "Pain (1–10)", x = "Condition")
+```
+
+# VISUALIZATION - BAR PLOT GRAPH
+
+In the x-axis of the bar plot are 4 conditions. pic1 is the first
+control, which measures pain level before playing pink music, and pic2
+measures pain level after the pink music. pim1 and pim2 show pain levels
+before and after playing music of choice respectively.
+
+``` r
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+#changed column setup to make box plot work
+data <- read.csv("dataset.csv")
+data_long <- data %>%
+  pivot_longer(cols = c(5, 6,7,8), names_to = "treatment", values_to = "value")
+
+#plot
+    ggplot(data_long, aes(x=treatment, y=value, fill=treatment)) + 
+    geom_boxplot(alpha=0.6) +
+    
+    scale_y_continuous(limits = c(0, 10), breaks = seq(0, 10, 1)) +
+  
+    theme_classic() +
+    theme(legend.position="none") +
+    scale_fill_brewer(palette="Spectral") +
+    theme(axis.text.x = element_text(size=15)) +
+    theme(axis.text.y = element_text(size=12)) + 
+    theme(axis.title.y = element_text(size=16, face="bold", margin = margin(r = 10))) +
+    ylab("Pain Level") +
+    xlab("")
+```
+
+![](Music-and-Chronic-Pain---Group-Final-Rmarkdown_files/figure-gfm/boxplot-1.png)<!-- -->
+
+# REFERENCES
+
+1.  ChatGPT. OpenAI, version Jan 2025. Used as a reference for functions
+    such as plot() and to correct syntax errors. Accessed 2025-10-30.
+2.  R-graph gallery. Used as a template for bar plot graph coding.
+    Accessed 10/30/2025.

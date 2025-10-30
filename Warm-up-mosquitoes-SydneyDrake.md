@@ -1,7 +1,7 @@
 Warm-up mini-Report: Mosquito Blood Hosts in Salt Lake City, Utah
 ================
 Sydney Drake
-2025-10-09
+2025-10-11
 
 - [ABSTRACT](#abstract)
 - [BACKGROUND](#background)
@@ -10,9 +10,9 @@ Sydney Drake
   - [Hypothesis](#hypothesis)
   - [Prediction](#prediction)
 - [METHODS](#methods)
-  - [Fill in first analysis](#fill-in-first-analysis)
-  - [Fill in 2nd analysis/plot e.g. generalized linear
-    model](#fill-in-2nd-analysisplot-eg-generalized-linear-model)
+  - [First Analysis](#first-analysis)
+  - [Second analysis/plot e.g. generalized linear
+    model](#second-analysisplot-eg-generalized-linear-model)
 - [DISCUSSION](#discussion)
   - [Interpretation - fill in
     analysis](#interpretation---fill-in-analysis)
@@ -23,23 +23,38 @@ Sydney Drake
 
 # ABSTRACT
 
-Fill in abstract at the end after we have finished the methods, results,
-discussion, conclusions and know what our data “says”.
+Our study focuses on the relationship between several species of Utah
+birds and the West Nile Virus (WNV), an endemic disease in the United
+States. Avian species act as hosts, carrying the disease in their blood,
+and potentially passing it onto humans through mosquitoes. In this
+study, mosquitoes were trapped and collected at several locations, and
+DNA was obtained through PCR and sequencing. This data allowed the
+identification of the species the mosquitoes were feeding on, allowing
+for an analysis on what species were being fed on the most.
+Additionally, statistic tests were run, testing the relationship between
+house finches and the presence and prevalence of the WNV to determine if
+there is a correlation between the house finch and the WNV. A positive
+correlation was found with a high significance, leading to a conclusion
+that there is a positive correlation between the two.
 
 # BACKGROUND
 
 The West Nile Virus (WNV) has been endemic in mainland United States
-since the late 1900s and has since achieved endemic status. Spread of
-this disease has been linked to mosquitoes and carried by birds.
+since the late 1990s and has since achieved endemic status. Spread of
+this disease has been linked to mosquitoes and often carried by birds.
 Specific species of birds have been shown to have high viremia of the
-WNV, making them a common host and link in human infection with this
-disease. This study is focused on the link between House Finches and
-human WNV cases. Mosquito blood meal was taken from several locations,
-and data was compiled on those carrying the WNV and from what animal
-they took blood from. With the blood samples, PCR was performed and the
-resulting DNA was sequenced. Our hypothesis addresses the extent of WNV
-cases in House Finches specifically, and their likelihood of passing the
-disease onto humans.
+WNV when infected, making them a common host and link in human infection
+with this disease. Notably, the house finch is believed to be
+particularly susceptible to this disease, and has a high potential of
+passing it onto mosquitoes.
+
+This study is focused on the link between House Finches and human WNV
+cases. Mosquito blood meal was taken from several locations, and data
+was compiled on those carrying the WNV and from what animal they took
+blood from. With the blood samples, PCR was performed and the resulting
+DNA was sequenced. Our hypothesis addresses and quantifies the extent of
+WNV cases in House Finches specifically, and their likelihood of passing
+the disease onto humans.
 
 ``` r
 # Manually transcribe duration (mean, lo, hi) from the last table column
@@ -84,14 +99,15 @@ arrows(duration$lo, bp, duration$hi, bp,
 ## Questions
 
 The question we will study and address is “What bird species is acting
-as WNV amplifying host in Salt Lake City?”
+as WNV amplifying host in Salt Lake City?” as well as “To what degree
+are house finches and prevalence of the WNV correlated?”
 
 ## Hypothesis
 
 Our hypothesis is that house finches are acting as important amplifying
 hosts of WNV in Salt Lake City. We hypothesize that this specific
-species is particularly suseptible to this disease and produces a high
-viremia in the blood.
+species is particularly susceptible to spreading this disease as it
+produces a high viremia in it’s blood.
 
 ## Prediction
 
@@ -101,12 +117,23 @@ their systems.
 
 # METHODS
 
-Fill in here, including overview of procedure and methods used for this
-project. Collect PCR Sequence - BLAST Compile data in R
+First, mosquitoes were collected from several locations throughout the
+state of Utah using traps such as gravid traps and CO2 traps. The blood
+meal was run through PCR and sequenced. The results were compared to the
+BLAST database, identifying the species of blood meal within the
+mosquitoes. The resulting data were run through several statistical
+tests, of which are shown in this project, to determine significance.
+Additionally, graphs were compiled to visualize this data, as shown
+above in this project.
 
-## Fill in first analysis
+## First Analysis
 
-Paragraph describing
+The plot on the left shows the number of bloodmeals that came from each
+host species and locations were the WNV was not detected. The graph on
+the right also shows the number of bloodmeals that came from each host
+species, though at locations where the WNV was detected. This allows us
+to directly compare feeding patterns between infected and uninfected
+locations.
 
 ``` r
 ## import counts_matrix: data.frame with column 'loc_positives' (0/1) and host columns 'host_*'
@@ -179,7 +206,7 @@ barplot(height = counts0,
         horiz = TRUE,
         las = 1,
         xlab = "Bloodmeal counts",
-        main = "Locations WNV (-)",
+        main = "(-) WNV Locations",
         xlim = xlim_use)
 
 ## Panel B: WNV detected (loc_positives = 1)
@@ -191,7 +218,7 @@ barplot(height = counts1,
         horiz = TRUE,
         las = 1,
         xlab = "Bloodmeal counts",
-        main = "Locations WNV (+)",
+        main = "(+) WNV Locations",
         xlim = xlim_use)
 ```
 
@@ -204,13 +231,19 @@ par(op)
 host_species_colors <- species_colors
 ```
 
-## Fill in 2nd analysis/plot e.g. generalized linear model
+## Second analysis/plot e.g. generalized linear model
 
-Fill in here… Explain that you tested whether the presence or number of
-house finch blood meals predicts whether a site had WNV-positive pools
-(binary) or a higher WNV positivity rate (numeric). Mention that this
-statistical test lets you formally evaluate the relationship suggested
-by the barplots.
+We statistically evaluated whether the presence or number of house finch
+blood meals was associated with the WNV activity across collection
+sites. Specifically, we tested whether these variables predicted (1) the
+occurrence of WNV-positive mosquito pools (binary response: presence or
+absence) and (2) the WNV positivity rate at each site (continuous
+response). A logistic regression model was used for the binary outcome,
+and a linear regression model was used for the continuous outcome. These
+analyses allowed us to assess the relationship suggested by the
+exploratory bar plots and assess whether house finch feeding patterns
+were significantly associated with WNV occurrence and intensity across
+sites.
 
 ``` r
 # second-analysis-or-plot, glm with house finch alone against binary +/_
@@ -268,7 +301,7 @@ summary(glm2)
     ## Number of Fisher Scoring iterations: 2
 
 
-    ## Fill in second analysis/plot
+    ## Second analysis/plot
 
     ``` r
     # second-analysis-or-plot, glm with house finch alone against binary +/_
@@ -326,11 +359,43 @@ summary(glm2)
 
 # DISCUSSION
 
+With the collected data and statistical analyses, a clear positive
+relationship is seen between the population density of house finches and
+the presence and prevalence of the WNV.
+
+This leads us to believe that house finches are susceptible carriers to
+the WNV and have the potential to exponentially increase the presence of
+WNV. This relationship is likely due to the high viremia in the blood of
+infected house finches. Further study may be beneficial as to why this
+species is particularly suseptible, and if any mechanisms exist in
+decreasing the suseptibility of house finches to the WNV.
+
 ## Interpretation - fill in analysis
+
+Under binary statistical test, a p-value was calculated; 0.0287, which
+shows a high degree of confidence in the correlation. This leads us to
+believe that the presence of house finches increase the likelihood of
+positive WNV presence in a specific area.
 
 ## Interpretation - fill in analysis/plot
 
+Following the continuous model, we can conclude that there is a positive
+correlation between the presence of house finches and the prevalence of
+WNV. This correlation is determined to be highly significant with a
+p-value of 0.000045. In other words, with more house finches present in
+an area, the WNV will become increasingly more common in trapped
+mosquitoes.
+
 # CONCLUSION
+
+In conclusion, our original hypothesis was proven correct with highly
+significant p-values from a continuous and binary statstical test. Due
+to these results, we can conclude that the presence of house finch
+populations positively correlates with the WNV, in both presence and the
+extent and spread of the disease. This has the potential to assist in
+future control of the spread of the WNV. Mosquito control resources can
+potentially be focused on these specific areas, which would thereby
+protect human populations.
 
 # REFERENCES
 
@@ -339,5 +404,5 @@ summary(glm2)
     birds with the New York 1999 strain of West Nile virus. Emerg Infect
     Dis. 2003 Mar;9(3):311-22. <https://doi.org/10.3201/eid0903.020628>
 
-2.  ChatGPT. OpenAI, version Jan 2025. Used as a reference for functions
-    such as plot() and to correct syntax errors. Accessed 2025-10-09.
+2.  ChatGPT. OpenAI, version 5. Used to correct syntax errors. Accessed
+    10/10/2025.
