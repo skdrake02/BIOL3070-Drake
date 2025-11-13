@@ -1,25 +1,62 @@
 Music and Chronic Pain - Rmarkdown Final
 ================
 Sydney Drake
-2025-10-30
+2025-11-13
 
+- [ABSTRACT](#abstract)
 - [QUESTION](#question)
 - [HYPOTHESIS](#hypothesis)
+- [PREDICTION](#prediction)
 - [STATISTICAL TEST](#statistical-test)
 - [VISUALIZATION - BAR PLOT GRAPH](#visualization---bar-plot-graph)
 - [REFERENCES](#references)
 
+# ABSTRACT
+
+\#INTRODUCTION
+
+Fibromyalgia is a disease characterized by chronic, widespread pain and
+fatigue. Such a condition negatively impacts an individual’s ability to
+function in daily life. As there is no easy treatment to improve these
+individual’s quality of life, it is of the utmost importance to study a
+wide variety of therapies and treatments to improve how this condition
+is addressed.
+
+Classical music, for example, has long been associated with benefits in
+treatment and outcome.
+
+Our study addresses the affect of music on an individual’s experience of
+chronic pain due to fibromyalgia. Participants in this study, all with
+this condition, split into two groups: control and treatment. These two
+groups are questioned about their pain level before then receiving the
+music treatment, either the control or music. The pain level of the
+participants is then once again taken.
+
+This study is important because it addresses a significant need in our
+society. Many individuals who struggle with this chronic pain have had
+unsatisfactory results with traditional medicine and treatment. Relief
+from chronic pain would improve quality of life for millions of
+Americans, thereby improving society and furthering our understanding of
+this disease.
+
 # QUESTION
 
-Does music decrease the experience of chronic pain associated with
-fibromyalgia? What type of music has the greatest effect on chronic
-pain?
+Does music treatment decrease the experience of chronic pain associated
+with fibromyalgia?
 
 # HYPOTHESIS
 
 Participants with fibromyalgia experiencing chronic pain will report
-less pain while listening to music. Classical music will have the most
-effective performance.
+less pain while listening to music compared to pink noise (control).
+Additionally, participants will report lower pain after listening to
+music than before music treatment.
+
+# PREDICTION
+
+We predict to see lower rates of pain in individuals after receiving
+music treatment compared to individuals who received the control
+treatment. We expect to see correlated significance in our statistical
+tests.
 
 # STATISTICAL TEST
 
@@ -30,53 +67,6 @@ and after music of choice.
 
 For visualization, we will compare the bar plot of individual’s pain
 scores across these three conditions.
-
-```
-# Load libraries
-library(tidyverse)
-library(ez)
-
-# Import data
-data <- read.csv("dataset.csv")
-
-# Check the structure of your dataset
-str(data)
-head(data)
-
-# Reshape data from wide to long format
-# (assuming each row = one participant, and columns = conditions)
-data_long <- data %>%
-  pivot_longer(cols = c(pic1, pic2, pi1, pim2),
-               names_to = "Condition",
-               values_to = "Pain")
-
-# Add a participant ID if not already present
-if(!"Participant" %in% names(data_long)){
-  data_long$Participant <- rep(1:(nrow(data_long)/4), each = 4)
-}
-
-# Run repeated-measures ANOVA
-anova_result <- ezANOVA(
-  data = data_long,
-  dv = Pain,
-  wid = Participant,
-  within = Condition,
-  detailed = TRUE
-)
-
-# View results
-print(anova_result)
-
-# Optional: pairwise comparisons (post-hoc)
-pairwise.t.test(data_long$Pain, data_long$Condition, paired = TRUE, p.adjust.method = "bonferroni")
-
-# Optional: bar plot with error bars
-ggplot(data_long, aes(x = Condition, y = Pain, fill = Condition)) +
-  stat_summary(fun = mean, geom = "bar", color = "black", width = 0.6) +
-  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2) +
-  theme_minimal() +
-  labs(title = "Pain Ratings Across Conditions", y = "Pain (1–10)", x = "Condition")
-```
 
 # VISUALIZATION - BAR PLOT GRAPH
 
@@ -103,32 +93,141 @@ library(dplyr)
     ##     intersect, setdiff, setequal, union
 
 ``` r
-#changed column setup to make box plot work
 data <- read.csv("dataset.csv")
-data_long <- data %>%
-  pivot_longer(cols = c(5, 6,7,8), names_to = "treatment", values_to = "value")
 
-#plot
-    ggplot(data_long, aes(x=treatment, y=value, fill=treatment)) + 
-    geom_boxplot(alpha=0.6) +
-    
-    scale_y_continuous(limits = c(0, 10), breaks = seq(0, 10, 1)) +
-  
-    theme_classic() +
-    theme(legend.position="none") +
-    scale_fill_brewer(palette="Spectral") +
-    theme(axis.text.x = element_text(size=15)) +
-    theme(axis.text.y = element_text(size=12)) + 
-    theme(axis.title.y = element_text(size=16, face="bold", margin = margin(r = 10))) +
-    ylab("Pain Level") +
-    xlab("")
+data_long <- data %>%
+  pivot_longer(
+    cols = c(pic1, pic2, pim1, pim2),
+    names_to = "treatment",
+    values_to = "value"
+  )
+
+ggplot(
+  data_long %>%
+    mutate(
+      treatment = recode(
+        treatment,
+        pic1 = "Before Control",
+        pic2 = "After Control",
+        pim1 = "Before Music",
+        pim2 = "After Music"
+      ),
+      treatment = factor(
+        treatment,
+        levels = c("Before Control", "After Control", "Before Music", "After Music")
+      )
+    ),
+  aes(x = treatment, y = value, fill = treatment)
+) +
+  geom_boxplot(alpha = 0.6) +
+  scale_y_continuous(breaks = seq(0, 10, 1)) +
+  coord_cartesian(ylim = c(0, 10)) +
+  scale_fill_brewer(palette = "Spectral") +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(size = 12, face = "bold"),
+    axis.text.y = element_text(size = 12),
+    axis.title.x = element_text(size = 16, face = "bold", margin = margin(t = 10)),
+    axis.title.y = element_text(size = 16, face = "bold", margin = margin(r = 10))
+  ) +
+  xlab("Pain Intensity") +
+  ylab("Pain Level")
 ```
 
-![](Music-and-Chronic-Pain---Group-Final-Rmarkdown_files/figure-gfm/boxplot-1.png)<!-- -->
+    ## Warning: Removed 92 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](Music-and-Chronic-Pain---Group-Final-Rmarkdown_files/figure-gfm/code%20chunk%201-1.png)<!-- -->
+
+``` r
+# Pivot pic1 and pic2 into long format
+data_long <- data %>%
+  pivot_longer(cols = c(pic1, pic2), names_to = "treatment", values_to = "value")
+
+# Make boxplot
+ggplot(data_long, aes(x = treatment, y = value, fill = treatment)) +
+  geom_boxplot(alpha = 0.7, width = 0.6) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Set1") +
+  ylab("Pain Level") +
+  xlab("Pain Intensity-Control 1 (before) and Pain Intensity-Control 2 (after)") +
+  theme(
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  )
+```
+
+    ## Warning: Removed 46 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](Music-and-Chronic-Pain---Group-Final-Rmarkdown_files/figure-gfm/code%20chunk%202-1.png)<!-- -->
+
+``` r
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+# Read your dataset
+data <- read.csv("dataset.csv")
+
+# Pivot pic2 and pim2 into long format
+data_long <- data %>%
+  pivot_longer(cols = c(pim1, pim2), names_to = "treatment", values_to = "value")
+
+# Make boxplot
+ggplot(data_long, aes(x = treatment, y = value, fill = treatment)) +
+  geom_boxplot(alpha = 0.7, width = 0.6) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Set1") +
+  ylab("Pain Level") +
+  xlab("Pain Intensity-Music 1 (before) and Pain Intensity-Music 2 (after)") +
+  theme(
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  )
+```
+
+    ## Warning: Removed 46 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](Music-and-Chronic-Pain---Group-Final-Rmarkdown_files/figure-gfm/3rd%20code%20chunk-1.png)<!-- -->
+
+``` r
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+data <- read.csv("dataset.csv")
+
+# Pivot pim1 and pim2 into long format
+data_long_pim <- data %>%
+  pivot_longer(cols = c(pic2, pim2), names_to = "treatment", values_to = "value")
+
+# Make boxplot
+ggplot(data_long_pim, aes(x = treatment, y = value, fill = treatment)) +
+  geom_boxplot(alpha = 0.7, width = 0.6) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Set1") +
+  ylab("Pain Level") +
+  xlab("Pain Intensity-Control 2 (after) and Pain Intensity-Music 2 (after)") +
+  theme(
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  )
+```
+
+    ## Warning: Removed 46 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](Music-and-Chronic-Pain---Group-Final-Rmarkdown_files/figure-gfm/code%20chunk%20pic2%20vs%20pim2-1.png)<!-- -->
 
 # REFERENCES
 
 1.  ChatGPT. OpenAI, version Jan 2025. Used as a reference for functions
-    such as plot() and to correct syntax errors. Accessed 2025-10-30.
+    such as plot() and to correct syntax errors. Accessed 2025-11-13.
 2.  R-graph gallery. Used as a template for bar plot graph coding.
     Accessed 10/30/2025.
