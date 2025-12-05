@@ -1,0 +1,120 @@
+---
+title: "Music and Chronic Pain - Rmarkdown Final"
+author: "Sydney Drake"
+date: "`r Sys.Date()`"
+output:
+  github_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# ABSTRACT
+
+The influence of music on chronic pain was studied in this paper. Participants with fibromyalgia, a disorder that causes chronic pain, were exposed to either a control or music of choice, and their pain level (1-10) was measured both before and after. With this data, statistical tests such as ANOVA and GLM were used to test for significance. We came to the conclusion that music treatment does decrease pain level by a measurable and significant amount 1.118 on the 1-10 pain level scale. This has the potential to increase an individual's quality of life despite chronic pain conditions. Further study could explore the relationship between music and pain levels further.
+
+# BACKGROUND
+
+Fibromyalgia is a medical condition that presents through symptoms “including fatigue, sleep disturbances, cognitive dysfunction, and depressive episodes… chronic fatigue syndrome, irritable bowel syndrome (IBS), irritable bladder syndrome or interstitial cystitis, and temporomandibular disorder (TMD)” (2). Such a disease negatively impacts an individual's ability to function in daily life. With no easy option for long-term relief, it becomes of the utmost importance to study a wide variety of therapies and treatments to improve how Fibromyalgia is addressed and treated.
+
+In past studies, music has been associated with benefits in treatment and outcome. In their study, Kemper & Danhauer reported that individuals who received music treatment experienced lower levels of anxiety and enhanced moods. Improving the individual’s experience of pain and anxiety often indirectly improves physical condition, thereby raising quality of life.
+The data used in our study was obtained from Pando-Naude et al. (4). Our study addresses the effect of music on an individual's experience of chronic pain due to fibromyalgia. Participants in this study, all with Fibromyalgia, are split into two groups: control and treatment. These two groups are questioned about their pain level from 1-10 both before and after receiving the music treatment, either the control or music.
+
+This study is important because it addresses a significant need in our society. Many individuals who struggle with this chronic pain have had unsatisfactory results with traditional medicine and treatment. Believed to be present in 2-8% of the world population, effective treatment and relief from Fibromyalgia becomes an important breakthrough to strive for. This would thereby improve society and further our understanding of this disease.
+
+The question of our study is: does music treatment help relieve pain or lower pain perception associated with fibromyalgia? We predict that participants with fibromyalgia experiencing chronic pain will report less pain while listening to music compared to pink noise (control). Additionally, we predict that participants will report lower pain after listening to music than before music treatment. Our hypothesis is that the statistical tests (ANOVA) run with the data will show reliable significance.
+
+# METHODS
+
+20 individuals with Fibromyalgia (a chronic pain disorder) participated in this study. The participants rated pain level on 1-10 scale before and after listening to 5 mins of either chosen music (treatment) or the control (pink noise). Music chosen by the individual had to be familiar, pleasant, and at a slow tempo (< 120 bpm). With the data collected, we ran code in Rstudio to make a barplot for visualization and two t tests to test for significance. Said analyses are shown below.
+
+## ANALYSIS 1 - BARPLOT
+
+``` {r code 1st chunk: all 4 conditions}
+
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+data <- read.csv("dataset.csv")
+
+data_long <- data %>%
+  pivot_longer(
+    cols = c(pic1, pic2, pim1, pim2),
+    names_to = "treatment",
+    values_to = "value"
+  )
+
+ggplot(
+  data_long %>%
+    mutate(
+      treatment = recode(
+        treatment,
+        pic1 = "Before Control",
+        pic2 = "After Control",
+        pim1 = "Before Music",
+        pim2 = "After Music"
+      ),
+      treatment = factor(
+        treatment,
+        levels = c("Before Control", "After Control", "Before Music", "After Music")
+      )
+    ),
+  aes(x = treatment, y = value, fill = treatment)
+) +
+  geom_boxplot(alpha = 0.6) +
+  scale_y_continuous(breaks = seq(0, 10, 1)) +
+  coord_cartesian(ylim = c(0, 10)) +
+  scale_fill_brewer(palette = "Spectral") +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(size = 12, face = "bold"),
+    axis.text.y = element_text(size = 12),
+    axis.title.x = element_text(size = 16, face = "bold", margin = margin(t = 10)),
+    axis.title.y = element_text(size = 16, face = "bold", margin = margin(r = 10))
+  ) +
+  xlab("Pain Intensity") +
+  ylab("Pain Level")
+
+
+```
+
+In the x-axis of the bar plot are 4 conditions - before and after control, as well as before and after treatment. The y-axis shows reported pain (1-10) at these four conditions. This visualization allows us to compare the effects of both the treatment and the control. In this graph, a slight increase in mean pain level (0.471) can be seen in the “after control.” On the other hand, a significant decrease of -1.118 in mean pain level is seen in the “after treatment.”
+
+## ANALYSIS 2 - T TEST
+
+```{r t test control}
+t.test(data$pic2, data$pic1, paired = TRUE)
+
+```
+
+```{r t test music}
+t.test(data$pim2, data$pim1, paired = TRUE)
+
+```
+
+Shown above is a statistical analysis of the data; two t-tests. The purpose of these tests is to test for significance; in other words, to test if the differences described above are reliable. The control had a p-value of 0.072 (not significant), and a t-value of 1.926. The music treatment had a p-value of 0.00714 (significant), and a t-value of -3.082.
+
+# DISCUSSION
+
+Interpreting the graph shows us that there are differences between both the control and treatment as well as before and after treatment. As stated in the methods, the pain level increased by a mean average of 0.471 in the control, though with a p-value of 0.072, this number is not significant. We cannot determine if the control affected pain level from these results. On the other hand, the music treatment decreased pain level by a mean average of 1.118. With a p-value of 0.00714, we can conclude with significance that music treatment decreases the pain level of an individual with Fibromyalgia.
+
+Limitations include the small sample size of this dataset of only 20 individuals. Additionally, further complications can come from the fact that each person has a unique interpretation and tolerance of pain, leading to a difficulty in standardizing pain level. Future studies could address this by studying a larger sample size and by exploring use of a visual pain scale (eg. Wong-Baker FACES Scale) in place of the standard 1-10 scale.
+
+# CONCLUSION
+
+We can conclude that the hypothesis of this study is largely correct, as a decrease in pain was shown after the music treatment. The implications of this study show a step towards a more comfortable future for individuals with Fibromyalgia, as they may find affordable and effective methods for finding relief. Chronic pain is often difficult to treat as traditional medicine doesn’t always improve the individual’s pain. These results show that music treatment and/or therapy could play a key role in treatment of chronic pain; perhaps used in conjunction with other, traditional treatments.
+
+# REFERENCES
+
+1. ChatGPT. OpenAI, version Jan 2025. Used as a reference for functions such as plot() and to correct syntax errors. Accessed `r Sys.Date()`.
+
+2. Clauw, Daniel J. “Fibromyalgia: An Overview.” The American Journal of Medicine, vol. 122, no. 12, Dec. 2009, doi:10.1016/j.amjmed.2009.09.006. 
+
+3. Danhauer, Suzanne. “Music as Therapy.” Southern Medical Journal, 2005. https://doi.org/10.1097/01.SMJ.0000154773.11986.39
+
+4. Eduardo A. Garza-Villarreal, Victor Pando-Naude, Fernando A. Barrios, Peter Vuust, Lene Vase, Elvira Brattico, Erick H. Pasaye, and Sarael Alcauter (2019). Functional Connectivity of Music-Induced Analgesia in Fibromyalgia. OpenNeuro. [Dataset] doi: 10.18112/openneuro.ds001928.v1.1.0
+
+

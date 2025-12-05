@@ -143,7 +143,7 @@ ggplot(
     ## Warning: Removed 92 rows containing non-finite outside the scale range
     ## (`stat_boxplot()`).
 
-![](Music-and-Chronic-Pain---Group-Final-Rmarkdown_files/figure-gfm/code%201st%20chunk:%20all%204%20conditions-1.png)<!-- -->
+![](Music-and-Chronic-Pain---Final-Rmarkdown_files/figure-gfm/code%201st%20chunk:%20all%204%20conditions-1.png)<!-- -->
 
 In the x-axis of the bar plot are 4 conditions - before and after
 control, as well as before and after treatment. The y-axis shows
